@@ -7,6 +7,13 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+  dbAdmin:
+    image: 'dpage/pgadmin4'
+    ports:
+      - 4020:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@emai.com
+      - PGADMIN_DEFAULT_PASSWORD=password      
   zookeeper:
     image: confluentinc/cp-zookeeper:5.5.3
     environment:
