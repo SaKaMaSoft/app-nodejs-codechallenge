@@ -80,3 +80,12 @@ You can use Graphql;
 When you finish your challenge, after forking a repository, you **must** open a pull request to our repository. There are no limitations to the implementation, you can follow the programming paradigm, modularization, and style that you feel is the most appropriate solution.
 
 If you have any questions, please let us know.
+
+# Challenge Resolve by Master Jedi Darth Pedro
+
+You can use below endpoints to can send testing messages to Kafka.
+<ol>
+  <li>Post: GET http://localhost:3001/kafka/send-message </li>
+  <li>Start Consumer: GET http://localhost:3001/kafka/send-message </li> 
+  <li>You have to wait a couple of second before start looking messages consumed. </li>
+</ol>
