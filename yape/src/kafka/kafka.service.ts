@@ -18,18 +18,24 @@ export class KafkaService {
      * @param message Message to be send
      */
     async sendMessage(topic: string, message: string): Promise<void> {
-        const producer = this.kafka.producer();
-        message = message.concat(' ', new Date().toString());
-        await producer.connect();
-        await producer.send({
-            topic,
-            messages: [{ value: message }]
-        });
-        console.log('Message Sent');
-        await producer.disconnect();
+        try {
+            const producer = this.kafka.producer();
+            await producer.connect();
+            await producer.send({
+                topic,
+                messages: [{ value: message }]
+            });
+
+            // TODO: Log to be changed to observability library.
+            console.log('Message Sent');
+            await producer.disconnect();
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     async consumeMessage(topic: string): Promise<void> {
+        // TODO: Log to be changed to observability library.
         console.log('Starting consumer');
         const consumer = this.kafka.consumer({ groupId: 'my-group-1' });
         await consumer.connect();

@@ -12,7 +12,7 @@ export class AppController implements OnModuleInit {
 
   onModuleInit() {
     const requestPatterns = [
-      'test.topic',
+      'test-topic',
     ];
 
     console.log('Starting Consumer');
@@ -23,13 +23,24 @@ export class AppController implements OnModuleInit {
 
   @Get()
   getHello(): string {
-    return this.appService.getHello();    
+    return this.appService.getHello();
   }
 
-  @EventPattern('test.topic')
+  @EventPattern('test-topic')
   async handleEntityCreated(payload: any) {
+    // Variable to randomize and simulate Anti Fraud validation system.
     let random_boolean = Math.random() < 0.5;
-    console.log(JSON.stringify(payload) + ' created');
+    let status = 'REJECTED';
+    const id = payload;
+    if (random_boolean) {
+      status = 'APPROVED';
+    }
+
+    // TODO: Log to be changed to observability library.
+    console.log(id, status);
+
+    // Once we the message we are calling our Payment PATCH endpoint to update transaction status.
+    console.log(await this.appService.sendUpdate(id, status));
   }
 
 }
