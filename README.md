@@ -121,6 +121,13 @@ Create below records on the database to can continue with the demo.
 insert into credit values ('cac17a36-ece7-478f-89d1-3e1eeef2b18a', 'My Name') ;
 
 insert into debit values ('dac17a36-ece7-478f-89d1-3e1eeef2b18a', 'My Name') ;
+
+insert into status values (1, 'PENDING');
+insert into status values (2, 'APPROVED');
+insert into status values (3, 'REJECTED');
+
+insert into transaction_type values (1, 'Domestic Transfer');
+insert into transaction_type values (2, 'Cross Border');
 ```
 </li>
 <li>
@@ -129,6 +136,15 @@ To run the project execute below command
 ```
 npm run start:dev
 ```
+</li>
+
+<li>
+Call this service to can load Redis Cache
+
+```
+POST http://localhost:3001/api/redis
+```
+
 </li>
 <li>
 To create a payment you can use below endpoint and body.
@@ -168,6 +184,28 @@ PATCH http://localhost:3001/api/v1/payments/{Payment-id}
 ```
 
 </li>
+<li>
+Endpoint to can retrieve data base on body parameters.
+
+```
+http://localhost:3001/api/v1/payments/
+```
+
+```json
+{
+    "transactionExternalId": "{Payment-id}",
+    "transactionType": {
+        "name": "Domestic Transfer"
+    },
+    "transactionStatus": {
+        "name": "PENDING"
+    },
+    "value": 120,
+    "createdAt": "Date"
+}
+```
+
+</li>
 </ol>
 
 ## Extra Information
@@ -182,9 +220,8 @@ You can use below endpoints to can send testing messages to Kafka.
 ## Disclaimers
 
 Things not included in the project:
-- In app.module.ts I've a configuration in place about how to configure master and slave for read and write segregations, this will help to reduce and optimize operations into database. Also, another solution could be using a Memory Cache like Redis to keep data in other layer reduction consumption of database.
+- In app.module.ts I've a configuration in place about how to configure master and slave for read and write segregations, this will help to reduce and optimize operations into database. Basic Redis implementation to reduce read operations to database
 - There is no any test cases written.
-- Move variables connections to config files.
-- Move credentials to secret management app that can be injected in runtime at the container.
-
-- TODO: Changing cache-manager
+- Move connections variables to config files.
+- Move credentials to secret management app to can be injected in runtime at the container.
+- Refactor to cache-manager to can implement properly Redis.

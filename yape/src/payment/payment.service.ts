@@ -109,11 +109,10 @@ export class PaymentService {
     }
 
     async findByFilter(paymentFilterDto: PaymentFilterDto): Promise<Payment> {
-        console.log(paymentFilterDto);
         const id = paymentFilterDto.transactionExternalId;
         const transactionTypeId = await this.getTransactionTypeByName(paymentFilterDto.transactionType.name);
         const status = await this.getStatus(paymentFilterDto.transactionStatus.name);
-        console.log(id, transactionTypeId, status);
+        // TODO: It's pending to implement query by amount.
         const payment = await this.paymentRepository
             .createQueryBuilder('payment')
             .leftJoinAndSelect("payment.transactionTypeId", "type")
@@ -123,10 +122,12 @@ export class PaymentService {
             .andWhere("payment.status = :status", { status })
             // .select(["payment.id"])
             .execute();
-        console.log('payment: ', payment);
         if (payment.length === 0) {
             throw new HttpException('Payment was not found.', HttpStatus.NOT_FOUND);
         }
+
+        // TODO: Log to be changed to observability library.
+        console.log('Information retrieve for id: ', id);
         const paymentMap = new Payment();
         paymentMap.id = payment[0].payment_id;
         paymentMap.value = payment[0].payment_value;
