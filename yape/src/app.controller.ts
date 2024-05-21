@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { Client, ClientKafka, EventPattern } from '@nestjs/microservices'
 import { microserviceConfig } from './configs/microserviceConfig';
 import { InjectRedis } from '@nestjs-modules/ioredis';
+import { STATUS_APPROVED, STATUS_PENDING, STATUS_REJECTED, TRANSACTION_TYPE_CROSS_BORDER, TRANSACTION_TYPE_DOMESTIC_TRANSFER } from './constants/status';
 
 @Controller()
 export class AppController implements OnModuleInit {
@@ -39,21 +40,36 @@ export class AppController implements OnModuleInit {
   async setUpRedisData() {
     // TODO: Have to be changed in a different initialization, only for the challenge.
     console.log('Initialization of Redis Data');
-    const status = {
-      'Approved': 'APPROVED',
-      'Pending': 'PENDING',
-      'Rejected': 'REJECTED',
-    }
+    const status = [
+      {
+        id: STATUS_PENDING,
+        name: 'PENDING'
+      },
+      {
+        id: STATUS_APPROVED,
+        name: 'APPROVED'
+      },
+      {
+        id: STATUS_REJECTED,
+        name: 'REJECTED'
+      }
+    ];
+    const type = [
+      {
+        id: TRANSACTION_TYPE_DOMESTIC_TRANSFER,
+        name: 'Domestic Transfer'
+      },
+      {
+        id: TRANSACTION_TYPE_CROSS_BORDER,
+        name: 'Cross Border'
+      }
+    ];
     await this.redis.set('status', JSON.stringify(status));
-    const type = {
-      'Domestic Transfer': 1,
-      'Cross Border': 2
-    }
     await this.redis.set('type', JSON.stringify(type));
-    const statusData = JSON.parse(await this.redis.get("status"));
-    const typeData = JSON.parse(await this.redis.get("type"));
-    console.log(statusData, typeData);
-    return { statusData, typeData };
+    const statuses = JSON.parse(await this.redis.get("status"));
+    const transactionTypes = JSON.parse(await this.redis.get("type"));
+    console.log(statuses, transactionTypes);
+    return { statuses, transactionTypes };
   }
 
   @EventPattern('test-topic')

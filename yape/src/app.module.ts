@@ -9,7 +9,8 @@ import { PaymentService } from './payment/payment.service';
 import { PaymentController } from './payment/payment.controller';
 import { KafkaModule } from './kafka/kafka.module';
 import { RedisModule } from '@nestjs-modules/ioredis';
-import { Type } from './others/type.entity';
+import { TransactionType } from './others/type.entity';
+import { Status } from './others/status.entity';
 
 @Module({
   // imports: [TypeOrmModule.forRoot({
@@ -40,10 +41,10 @@ import { Type } from './others/type.entity';
       username: 'postgres',
       password: 'postgres',
       database: 'postgres',
-      entities: [Debit, Credit, Payment, Type],
+      entities: [Debit, Credit, Payment, TransactionType, Status],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([Payment]),
+    TypeOrmModule.forFeature([Payment, Credit, Debit]),
     KafkaModule,
     RedisModule.forRoot({
       type: 'single',

@@ -150,7 +150,21 @@ POST http://localhost:3001/api/v1/payments/
 To can query new record created you can use below endpoint:
 
 ```
-GET http://localhost:3001/api/v1/payments/{Payment-id-created}
+GET http://localhost:3001/api/v1/payments/{Payment-id}
+```
+
+</li>
+<li>
+To can patch a payment you can use below endpoint and body:
+
+```
+PATCH http://localhost:3001/api/v1/payments/{Payment-id}
+```
+
+```json
+{
+    "status": "REJECTED"
+}
 ```
 
 </li>
@@ -170,3 +184,7 @@ You can use below endpoints to can send testing messages to Kafka.
 Things not included in the project:
 - In app.module.ts I've a configuration in place about how to configure master and slave for read and write segregations, this will help to reduce and optimize operations into database. Also, another solution could be using a Memory Cache like Redis to keep data in other layer reduction consumption of database.
 - There is no any test cases written.
+- Move variables connections to config files.
+- Move credentials to secret management app that can be injected in runtime at the container.
+
+- TODO: Changing cache-manager

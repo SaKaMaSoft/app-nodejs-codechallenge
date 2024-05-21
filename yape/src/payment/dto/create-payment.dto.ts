@@ -10,7 +10,7 @@ export class CreatePaymentDto {
     accountExternalIdDebit: Debit;
 
     @IsNumber()
-    tranferTypeId: number;
+    transactionTypeId: number;
 
     @IsInt()
     @Max(1000)

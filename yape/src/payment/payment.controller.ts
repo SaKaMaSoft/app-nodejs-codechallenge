@@ -3,6 +3,7 @@ import { Payment } from './payment.entity';
 import { PaymentService } from './payment.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
+import { PaymentFilterDto } from './dto/payment-filter.dto';
 
 @Controller({
     version: '1',
@@ -24,5 +25,10 @@ export class PaymentController {
     @Get(':id')
     findMe(@Param() params): Promise<Payment> {
         return this.paymentService.findById(params.id);
+    }
+
+    @Get()
+    findbyFilter(@Body() paymentFilterDto: PaymentFilterDto): Promise<Payment> {
+        return this.paymentService.findByFilter(paymentFilterDto);
     }
 }
