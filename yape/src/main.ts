@@ -6,12 +6,12 @@ import { microserviceConfig } from './configs/microserviceConfig';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const microserviceTcp = app.connectMicroservice<MicroserviceOptions>({
+  app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.TCP,
     options: {
       port: 3000,
     },
-  }); 
+  });
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix('api')
   app.enableVersioning({

@@ -1,11 +1,16 @@
-import { Controller, Get, OnModuleInit } from '@nestjs/common';
+import { Controller, Get, OnModuleInit, Post } from '@nestjs/common';
+import Redis from 'ioredis';
 import { AppService } from './app.service';
 import { Client, ClientKafka, EventPattern } from '@nestjs/microservices'
 import { microserviceConfig } from './configs/microserviceConfig';
+import { InjectRedis } from '@nestjs-modules/ioredis';
 
 @Controller()
 export class AppController implements OnModuleInit {
-  constructor(private readonly appService: AppService) { }
+  constructor(
+    private readonly appService: AppService,
+    @InjectRedis() private readonly redis: Redis
+  ) { }
 
   @Client(microserviceConfig)
   client: ClientKafka;
@@ -24,6 +29,31 @@ export class AppController implements OnModuleInit {
   @Get()
   getHello(): string {
     return this.appService.getHello();
+  }
+
+  /**
+   * Endpoint to initiliaze data stored in Redis.
+   * @returns Return information created
+   */
+  @Post('redis')
+  async setUpRedisData() {
+    // TODO: Have to be changed in a different initialization, only for the challenge.
+    console.log('Initialization of Redis Data');
+    const status = {
+      'Approved': 'APPROVED',
+      'Pending': 'PENDING',
+      'Rejected': 'REJECTED',
+    }
+    await this.redis.set('status', JSON.stringify(status));
+    const type = {
+      'Domestic Transfer': 1,
+      'Cross Border': 2
+    }
+    await this.redis.set('type', JSON.stringify(type));
+    const statusData = JSON.parse(await this.redis.get("status"));
+    const typeData = JSON.parse(await this.redis.get("type"));
+    console.log(statusData, typeData);
+    return { statusData, typeData };
   }
 
   @EventPattern('test-topic')
